@@ -1,0 +1,7 @@
+## TODO
+In no particular order:
+
+* Elixir wrapper for the library
+* Improve the 'cb_http_response' record to have better or nicely-fromatted JSON
+ data in the 'data' key.
+* Setup TravisCI
