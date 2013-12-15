@@ -1,0 +1,11 @@
+.codebox_dialyzer.plt
+erl_crash.dump
+*.beam
+rebar
+deps/
+ebin/
+doc/
+*~
+.eunit/
+.#*
+#*
