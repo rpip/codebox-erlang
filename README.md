@@ -40,33 +40,33 @@ Eshell V5.10.1  (abort with ^G)
     6> Response#cb_http_response.data.
 
 ### Retrieve activity log of a box
-    7> Response = codebox:box_activity(?CB_TEST_BOXID),
+    7> Response = codebox:box_activity(YOUR_BOX_ID),
     8> Response#cb_http_response.data.
 
 
 ### Retrive Codebox events
-    9> Response = codebox:box_events(?CB_TEST_BOXID),
+    9> Response = codebox:box_events(YOUR_BOX_ID),
     10> Response#cb_http_response.data
 
 ### Retrieve box info
-    11> Response = codebox:box_info(?CB_TEST_BOXID),
+    11> Response = codebox:box_info(YOUR_BOX_ID),
     12> Response#cb_http_response.data.
 
 ### Remove a box
-    13> Response = codebox:remove_box(?CB_TEST_BOXID),
+    13> Response = codebox:remove_box(YOUR_BOX_ID),
     14> Response#cb_http_response.success.
 
 
 ### Add collaborator
-    15> Response = codebox:add_collaborator(BoxId, ?CB_TEST_COLLABORATOR),
+    15> Response = codebox:add_collaborator(BoxId, "username@email.com"),
     16> Response#cb_http_response.success.
 
 ### List collaborators
-    17> Response = codebox:list_collaborators(?CB_TEST_BOXID),
+    17> Response = codebox:list_collaborators(YOUR_BOX_ID),
     18> Response#cb_http_response.data.
 
 ### Remove collaborator
-    19> Response = codebox:remove_box(?CB_TEST_BOXID, ?CB_TEST_COLLABORATOR),
+    19> Response = codebox:remove_box(YOUR_BOX_ID, "collaborator@email.com"),
     20> Response#cb_http_response.success.
 
 

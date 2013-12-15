@@ -12,7 +12,7 @@
 %% API Token for testing
 -define(CB_TEST_TOKEN, "3ca7a5bd-9bde-49c3-9f6d-e9a951c319bc").
 -define(CB_TEST_BOXID, "2a2cbcc5-afa1-431e-89aa-f35d4b07aa56").
--define(CB_TEST_COLLABORATOR, "mawuli.ypa@gmail.com").
+-define(CB_TEST_COLLABORATOR, <<"mawuli.ypa@gmail.com">>).
 
 %%%----------------------------------------------------------------------
 %%% Prelude

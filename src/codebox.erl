@@ -1,7 +1,7 @@
 %%%-------------------------------------------------------------------
 %%% @author Mawuli Adzaku <>
 %%% @copyright (C) 2013, Mawuli Adzaku <mawuli@mawuli.me>
-%%% @doc
+%%% @doc Erlang library for Codebox
 %%%
 %%% @end
 %%% Created : 14 Dec 2013 by Mawuli Adzaku <mawuli@mawuli.me>
@@ -9,11 +9,14 @@
 -module(codebox).
 -author("Mawuli Adzaku <mawuli@mawuli.me>").
 -include("codebox.hrl").
-%% API
+
+%% Codebox API
 -export([create_box/1, list_boxes/0, box_info/1,
          remove_box/1, box_events/1, box_activity/1]).
 -export([list_collaborators/1, add_collaborator/2,
          remove_collaborator/2]).
+
+%% Internal functions
 -export([request/2, request/3, request_headers/0,
          parse_api_response/2, build_url/1, build_url/2]).
 
@@ -76,6 +79,9 @@ list_collaborators(BoxId)->
     request(get, Url).
 
 %% @doc Add a collaborator by email
+-spec add_collaborator(BoxId, Email) -> #cb_http_response{} when
+      BoxId :: boxid(),
+      Email :: string().
 add_collaborator(BoxId, Email)->
     Url = build_url(collaborators, BoxId),
     request(post, Url, [{email, Email}]).
@@ -85,14 +91,16 @@ add_collaborator(BoxId, Email)->
       BoxId :: boxid(),
       Email :: string().
 remove_collaborator(BoxId, Email)->
-    Url = build_url(BoxId),
+    Url = build_url(collaborators, BoxId),
     request(delete, Url, [{email, Email}]).
 
 %%%-------------------------------------------------------------------
 %%% Internal API
 %%%-------------------------------------------------------------------
 %% @doc Make an HTTP request
--spec request(atom(), Url :: string()) -> #cb_http_response{}.
+-spec request(Method, Url) -> #cb_http_response{} when
+      Method :: get | delete | post,
+      Url :: string().
 request(get, Url) ->
     Headers = request_headers(),
     Res = lhttpc:request(Url, "GET", Headers,?HTTP_TIMEOUT),
@@ -101,6 +109,10 @@ request(get, Url) ->
 request(delete, Url) ->
     request(delete, Url, []).
 
+-spec request(Method, Url, Data) -> #cb_http_response{} when
+      Method :: get | delete | post,
+      Url :: string(),
+      Data :: list().
 request(delete, Url, Data) when is_list(Data) ->
     Headers = request_headers(),
     Body = jiffy:encode({Data}),
@@ -115,7 +127,7 @@ request(post, Url, Data) when is_list(Data) ->
     parse_api_response(StatusCode, Json).
 
 
-%% Construct the HTTP request headers
+%% @doc Construct the HTTP request headers
 -spec request_headers() -> [tuple()].
 request_headers() ->
     case application:get_env(?APP_NAME, api_token) of
@@ -133,6 +145,9 @@ request_headers() ->
 
 
 %% @doc Parses the HTTP response into a cb_http_response record
+-spec parse_api_response(HttpCode, ResponseText) -> #cb_http_response{} when
+      HttpCode :: integer(),
+      ResponseText :: json().
 parse_api_response(200, ResponseText) ->
     ResponseText2 = decode(ResponseText),
     #cb_http_response{success=true, http_code=200, data=ResponseText2};
