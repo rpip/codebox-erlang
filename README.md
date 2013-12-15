@@ -66,7 +66,7 @@ Eshell V5.10.1  (abort with ^G)
     18> Response#cb_http_response.data.
 
 ### Remove collaborator
-    19> Response = codebox:remove_box(YOUR_BOX_ID, "collaborator@email.com"),
+    19> Response = codebox:remove_box(YOUR_BOX_ID, "username@email.com"),
     20> Response#cb_http_response.success.
 
 

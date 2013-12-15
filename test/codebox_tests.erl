@@ -11,7 +11,7 @@
 -include("codebox.hrl").
 %% API Token for testing
 -define(CB_TEST_TOKEN, "3ca7a5bd-9bde-49c3-9f6d-e9a951c319bc").
--define(CB_TEST_BOXID, "2a2cbcc5-afa1-431e-89aa-f35d4b07aa56").
+%-define(CB_TEST_BOXID, "2a2cbcc5-afa1-431e-89aa-f35d4b07aa56").
 -define(CB_TEST_COLLABORATOR, <<"mawuli.ypa@gmail.com">>).
 
 %%%----------------------------------------------------------------------
@@ -33,14 +33,14 @@ codebox_test_() ->
         fun box_events/0},
        {"Retrive activity log about/for a box",
         fun box_activity/0},
-       %{"Remove/delete a box",
-        %fun remove_box/0},
        {"Retrieve list of people collaborating on a box",
         fun list_collaborators/0},
        {"Add a collaborator",
         fun add_collaborator/0},
-       {"Remove a collaborator",
-        fun remove_collaborator/0}
+       %{"Remove a collaborator",
+        %fun remove_collaborator/0},
+       {"Remove/delete a box",
+        fun remove_box/0}
      ]
      }
     }.
@@ -71,25 +71,28 @@ list_boxes() ->
 
 create_box() ->
     Box = #cb_box{name = <<"codebox-erl">>, type = <<"type1">>, 
-                  stack = <<"python">>, description = <<"Codebox erlang test box">>, 
-                  public = <<"true">> },
+                  stack = <<"python">>, description = <<"Codebox Python test box">>, 
+                  public = <<"true">>},
     Response = codebox:create_box(Box),
+    Boxid = jsonq:q([<<"id">>], Response#cb_http_response.data),
+    set_demobox_id(binary_to_list(Boxid)),
+    ?assertEqual(binary_to_list(Boxid), get_demobox_id()),
     ?assertEqual(true, Response#cb_http_response.success).
 
 box_activity() ->
-    Response = codebox:box_activity(?CB_TEST_BOXID),
+    Response = codebox:box_activity(get_demobox_id()),
     ?assertEqual(true, Response#cb_http_response.success).
     
 box_events() ->
-    Response = codebox:box_events(?CB_TEST_BOXID),
+    Response = codebox:box_events(get_demobox_id()),
     ?assertEqual(true, Response#cb_http_response.success).
 
 box_info() ->
-    Response = codebox:box_info(?CB_TEST_BOXID),
+    Response = codebox:box_info(get_demobox_id()),
     ?assertEqual(true, Response#cb_http_response.success).
 
 remove_box() ->
-    Response = codebox:remove_box(?CB_TEST_BOXID),
+    Response = codebox:remove_box(get_demobox_id()),
     ?assertEqual(true, Response#cb_http_response.success).
 
 
@@ -97,16 +100,31 @@ remove_box() ->
 %%% collaborators
 %%%-------------------------------------------------------------------
 add_collaborator() ->
-    Response = codebox:add_collaborator(?CB_TEST_BOXID, ?CB_TEST_COLLABORATOR),
+    Response = codebox:add_collaborator(get_demobox_id(), ?CB_TEST_COLLABORATOR),
     ?assertEqual(true, Response#cb_http_response.success).
 
 list_collaborators() ->
-    Response = codebox:list_collaborators(?CB_TEST_BOXID),
+    Response = codebox:list_collaborators(get_demobox_id()),
     ?assertEqual(true, Response#cb_http_response.success). 
 
 remove_collaborator() ->
-    Response = codebox:remove_collaborator(?CB_TEST_BOXID, ?CB_TEST_COLLABORATOR),
+    Response = codebox:remove_collaborator(get_demobox_id(), ?CB_TEST_COLLABORATOR),
     ?assertEqual(true, Response#cb_http_response.success).
 
 
 
+%%%-------------------------------------------------------------------
+%%% Miscellaneous
+%%%-------------------------------------------------------------------
+%% @doc Returns the demo box id
+get_demobox_id() ->
+    case application:get_env(?APP_NAME, demobox_id) of
+        {ok, API_TOKEN} when is_list(API_TOKEN) ->
+            API_TOKEN;
+        _ ->
+           undefined
+    end.
+
+%% @doc Set's the demo box id
+set_demobox_id(Boxid)->
+    application:set_env(?APP_NAME, demobox_id, Boxid).

@@ -87,11 +87,11 @@ add_collaborator(BoxId, Email)->
     request(post, Url, [{email, Email}]).
 
 %% @doc Remove a collaborator by email
--spec remove_collaborator(BoxId, Email) -> #cb_http_response{} when
-      BoxId :: boxid(),
+-spec remove_collaborator(Boxid, Email) -> #cb_http_response{} when
+      Boxid :: boxid(),
       Email :: string().
-remove_collaborator(BoxId, Email)->
-    Url = build_url(collaborators, BoxId),
+remove_collaborator(Boxid, Email)->
+    Url = build_url(collaborators, Boxid),
     request(delete, Url, [{email, Email}]).
 
 %%%-------------------------------------------------------------------
