@@ -31,12 +31,12 @@ Eshell V5.10.1  (abort with ^G)
 ### Create a new box
     2> Box = #cb_box{name="codebox-erl", type="type1",
                   stack="python", description, public=true},
-    3> Res = codebox:create_box(Box),
+    3> Response = codebox:create_box(Box),
     4> Response#cb_http_response.success.
 
 
 ### List boxes
-    5> Res = codebox:list_boxes(),
+    5> Response = codebox:list_boxes(),
     6> Response#cb_http_response.data.
 
 ### Retrieve activity log of a box
